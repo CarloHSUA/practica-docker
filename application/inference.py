@@ -136,5 +136,5 @@ def testing_model():
 
   print('Predicción: ', labels[np.argmax(prediction)])
 
-if __name__ == '__main__':
-   testing_model()
+# if __name__ == '__main__':
+#    testing_model()
