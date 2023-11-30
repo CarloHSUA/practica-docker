@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enviar imagen al servidor</title>
+    <style>
+        /* Estilos para el formulario y resultados */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        #result {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        #uploadedImage {
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enviar imagen al servidor</h2>
+    <p>https://img.kwcdn.com/product/1e23314fea/95c761bb-1ade-4300-82ef-b3dd6bc59563_800x800.jpeg</p>
+    <p>https://www.bluebananabrand.com/cdn/shop/files/ClassicTeeAqua1_1_720x.jpg?v=1683889376</p>
+    <p>https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/fc3c4c2a5d339cfb43ab5ba3b0be8859.jpg?imageView2/2/w/800/q/70</p>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="text" id="imageUrl" placeholder="URL de la imagen">
+        <button type="button" onclick="sendToServer()">Enviar URL</button>
+    </form>
+    <div id="result"></div>
+    <img id="uploadedImage" src="" alt="Imagen cargada">
+
+    <script>
+        function sendToServer() {
+            const imageUrl = document.getElementById('imageUrl').value;
+
+            fetch('http://127.0.0.1:8000/predict/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "url": imageUrl })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if ('predicted_class' in data) {
+                    resultDiv.innerHTML = `<p>Clase predicha: ${data.predicted_class}</p>`;
+                } else if ('error' in data) {
+                    resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+                }
+
+                // Mostrar la imagen cargada
+                document.getElementById('uploadedImage').src = imageUrl;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
+
